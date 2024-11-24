@@ -208,32 +208,68 @@ _raco_cmd_docs() {
   _racket_do_state
 }
 
-_racket_self_test 'raco setup:2092236815:tail -n +2' # full path for this one
+_racket_self_test 'raco setup:201959535:tail -n +2' # full path for this one
 _raco_cmd_setup() {
+  local collections=(
+    '(--only)'--only'[Set up only specified, even if none]'
+    '(-l)'-l'[Setup specific collections]:*:collection:->collect'
+    '(--pkgs)'--pkgs'[Setup collections in specified packages]:packages: '
+    '*'-P'[Setup specified PLaneT packages only]:owner: :package-name: :major-version: :minor-version: '
+    '(--doc-index)'--doc-index'[Rebuild documentation index along with specified]'
+    '(--tidy)'--tidy'[Clear references to removed items outside of specified]'
+  )
+  local tasks=(
+    '(-c --clean)'{-c,--clean}'[Delete existing compiled files; implies -nxiIFDK]'
+    '(--fast-clean)'--fast-clean'[Like --clean, but non-bootstrapping (can fail)]'
+    '(-n --no-zo)'{-n,--no-zo}'[Do not create .zo files]'
+    '(--trust-zos)'--trust-zos'[Trust existing .zos (use only with prepackaged .zos)]'
+    '(--recompile-only)'--recompile-only'[Fail if compilation must start from source]'
+    '(--sync-docs-only)'--sync-docs-only'[Sync/move documentation, but do not run or render]'
+    '(-x --no-launcher)'{-x,--no-launcher}'[Do not produce launcher programs]'
+    '(-F --no-foreign-libs)'{-F,--no-foreign-libs}'[Do not install foreign libraries]'
+    '(--only-foreign-libs)'--only-foreign-libs'[Disable actions except installing foreign libraries]'
+    '(-i --no-install)'{-i,--no-install}'[Do not call collection-specific pre-installers]'
+    '(-I --no-post-install)'{-I,--no-post-install}'[Do not call collection-specific post-installers]'
+    '(-d --no-info-domain)'{-d,--no-info-domain}'[Do not produce info-domain caches]'
+    '(-D --no-docs)'{-D,--no-docs}'[Do not compile .scrbl files and do not build documentation]'
+    '(--doc-pdf)'--doc-pdf'[Build documentation PDFs to directory]:dir:_files -/'
+    '(-K --no-pkg-deps)'{-K,--no-pkg-deps}'[Do not check package dependencies]'
+    '(--check-pkg-deps)'--check-pkg-deps'[Check package dependencies when collections specified]'
+    '(--fix-pkg-deps)'--fix-pkg-deps'[Auto-repair package-dependency declarations]'
+    '(--unused-pkg-deps)'--unused-pkg-deps'[Check for unused package-dependency declarations]'
+    '(--chain)'--chain'[Select a continuation other than `setup/setup-go`]'
+    '(--boot)'--boot'[Like `--chain`, but use compiled only from <dir>]'
+  )
+  local users=(
+    '(-U,--no-user)'{-U,--no-user}'[Do not setup user-specific collections (implies --no-planet)]'
+    '(--no-planet)'--no-planet'[Do not setup PLaneT packages]'
+    '(--avoid-main)'--avoid-main'[Do not make main-installation files]'
+    '(--force-user-docs)'--force-user-docs'[User-specific documentation even if matching installation]'
+  )
+  local modes=(
+    '(-j --jobs --workers)'{-j,--jobs,--workers}'[Use N parallel jobs]:cores: '
+    '(--places --processes)'--places'[Use places for parallel jobs]'
+    '(--places --processes)'--processes'[Use processes for parallel jobs]'
+    '(-v --verbose)'-v,--verbose'[See names of compiled files and info printfs]'
+    '(-m --make-verbose)'{-m,--make-verbose}'[See make and compiler usual messages]'
+    '(-r --compile-verbose)'{-r,--compile-verbose}'[See make and compiler verbose messages]'
+    '(--mode)'--mode'[Select a compilation mode, such as "errortrace"]:mode:(errortrace)'
+    '(--fail-fast)'--fail-fast'[Trigger a break on the first error]'
+    '(--error-out)'--error-out'[On continuable error, create file and exit as success]:out:_files'
+    '(--error-in)'--error-in'[Check file for report of previous errors]:in:_files'
+    '(-p --pause)'{-p,--pause}'[Pause at the end if there are any errors]'
+  )
+  local archives=(
+    '(--force)'--force'[Treat version mismatches for archives as mere warnings]'
+    '(-a --all-users)'{-a,--all-users}'[Install archives to main (not user-specific) installation]'
+    '(-A)'-A'[Unpack and install .plt archives]:plt archive:_files -g \*.plt'
+  )
   _arguments "$RACKET_COMMON[@]" \
-    '(-c --clean)'{-c,--clean}'[Delete existing compiled files; implies -nxi]' \
-    '(-j --workers)'{-j,--workers}'+[Use N parallel jobs]:cores: ' \
-    '(-n --no-zo)'{-n,--no-zo}'[Do not produce .zo files]' \
-    '(-x --no-launcher)'{-x,--no-launcher}'[Do not produce launcher programs]' \
-    '(-i --no-install)'{-i,--no-install}'[Do not call collection-specific pre-installers]' \
-    '(-I --no-post-install)'{-I,--no-post-install}'[Do not call collection-specific post-installers]' \
-    '(-d --no-info-domain)'{-d,--no-info-domain}'[Do not produce info-domain caches]' \
-    '(-D --no-docs)'{-D,--no-docs}'[Do not compile .scrbl files and do not build documentation]' \
-    '(-U --no-user)'{-U,--no-user}'[Do not setup user-specific collections (implies --no-planet)]' \
-    '(--no-planet)'--no-planet'[Do not setup PLaneT packages]' \
-    '(--avoid-main)'--avoid-main'[Do not make main-installation files]' \
-    '(-v --verbose)'{-v,--verbose}'[See names of compiled files and info printfs]' \
-    '(-m --make-verbose)'{-m,--make-verbose}'[See make and compiler usual messages]' \
-    '(-r --compile-verbose)'{-r,--compile-verbose}'[See make and compiler verbose messages]' \
-    '(--trust-zos)'--trust-zos'[Trust existing .zos (use only with prepackaged .zos)]' \
-    '(-p --pause)'{-p,--pause}'[Pause at the end if there are any errors]' \
-    '(--force)'--force'[Treat version mismatches for archives as mere warnings]' \
-    '(-a --all-users)'{-a,--all-users}'[Install archives to main (not user-specific) installation]' \
-    '(--mode)'--mode'[Select a compilation mode]:log-level:(errortrace)' \
-    '(--doc-pdf)'--doc-pdf'[Write doc PDF to directory]:directory:_files -/' \
-    '(-l)'-l'[Setup specific collections]:*:collection:->collect' \
-    '(-A)'-A'[Unpack and install .plt archives]:plt-archive:_files -g \*.plt' \
-    '*'-P'[Setup specified PLaneT packages only]:owner: :package-name: :major-version: :minor-version: ' \
+    "$collections[@]" \
+    "$tasks[@]" \
+    "$users[@]" \
+    "$modes[@]" \
+    "$archives[@]" \
   && return 0
   _racket_do_state
 }
