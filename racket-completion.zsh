@@ -229,11 +229,11 @@ _raco_cmd_setup() {
     '(-p --pause)'{-p,--pause}'[Pause at the end if there are any errors]' \
     '(--force)'--force'[Treat version mismatches for archives as mere warnings]' \
     '(-a --all-users)'{-a,--all-users}'[Install archives to main (not user-specific) installation]' \
-    '(--mode)'--mode'+[Select a compilation mode]:log-level:(errortrace)' \
-    '(--doc-pdf)'--doc-pdf'+[Write doc PDF to directory]:directory:_files -/' \
-    '(-l)'-l'+[Setup specific collections only]:*:collection:->collect' \
-    '(-A)'-A'+[Unpack and install .plt archives]:plt-archive:_files -g \*.plt' \
-    '*'-P'+[Setup specified PLaneT packages only]:owner: :package-name: :major-version: :minor-version: ' \
+    '(--mode)'--mode'[Select a compilation mode]:log-level:(errortrace)' \
+    '(--doc-pdf)'--doc-pdf'[Write doc PDF to directory]:directory:_files -/' \
+    '(-l)'-l'[Setup specific collections]:*:collection:->collect' \
+    '(-A)'-A'[Unpack and install .plt archives]:plt-archive:_files -g \*.plt' \
+    '*'-P'[Setup specified PLaneT packages only]:owner: :package-name: :major-version: :minor-version: ' \
   && return 0
   _racket_do_state
 }
