@@ -200,7 +200,7 @@ _raco() {
   fi
 }
 
-_racket_self_test 'raco docs:2277531825'
+_racket_self_test 'raco docs:3335848757'
 _raco_cmd_docs() {
   _arguments "$RACKET_COMMON[@]" \
     '*:search-term: ' \
