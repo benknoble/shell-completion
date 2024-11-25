@@ -274,30 +274,43 @@ _raco_cmd_setup() {
   _racket_do_state
 }
 
-_racket_self_test 'raco scribble:611326287'
+_racket_self_test 'raco scribble:313127162'
 _raco_cmd_scribble() {
+  local exclusive_modes='(--html --htmls --html-tree --latex --pdf --xelatex --lualatex --dvipdf --latex-section --text --markdown)'
   _arguments "$RACKET_COMMON[@]" \
-    '(--html --htmls --latex --pdf --latex-section --text --markdown)'--html'[Generate HTML-format output file (default)]' \
-    '(--html --htmls --latex --pdf --latex-section --text --markdown)'--htmls'[Generate HTML-format output directory]' \
-    '(--html --htmls --latex --pdf --latex-section --text --markdown)'--pdf'[Generate PDF-format output (with PDFLaTeX)]' \
-    '(--html --htmls --latex --pdf --latex-section --text --markdown)'--latex'[Generate LaTeX-format output]' \
-    '(--html --htmls --latex --pdf --latex-section --text --markdown)'--latex-section'+[Generate LaTeX-format output for section depth N]:section-depth: ' \
-    '(--html --htmls --latex --pdf --latex-section --text --markdown)'--text'[Generate text-format output]' \
-    '(--html --htmls --latex --pdf --latex-section --text --markdown)'--markdown'[Generate markdown-format output]' \
-    '(--dest)'--dest'+[Write output in directory]:directory:_files -/' \
-    '(--dest-name)'--dest-name'+[Write output as name]:name: ' \
-    '(--dest-base)'--dest-base'+[Start support-file names with prefix]:prefix: ' \
-    '*'++style'+[Add given .css/.tex file after others]:style-file:_files -g \*.\(css\|tex\)' \
-    '*'--style'+[Use given base .css/.tex file]:style-file:_files -g \*.\(css\|tex\)' \
-    '*'--prefix'+[Use given .html/.tex prefix (for doctype/documentclass)]:prefix-file:_files -g \*.\(html\|htm\|tex\)' \
-    '*'++extra'+[Add given file]:file:_files' \
-    '*'--redirect-main'+[Redirect main doc links to url]:url: ' \
-    '*'--redirect'+[Redirect external links to tag search via url]:url: ' \
+    "$exclusive_modes"--html'[Generate HTML-format output file (default)]' \
+    "$exclusive_modes"--htmls'[Generate HTML-format output directory]' \
+    "$exclusive_modes"--html-tree'[Generate HTML-format output directories N deep]:section-depth: ' \
+    "$exclusive_modes"--latex'[Generate LaTeX-format output]' \
+    "$exclusive_modes"--pdf'[Generate PDF-format output (via PDFLaTeX)]' \
+    "$exclusive_modes"--xelatex'[Generate PDF-format output (via XeLaTeX)]' \
+    "$exclusive_modes"--lualatex'[Generate PDF-format output (via LuaLaTeX)]' \
+    "$exclusive_modes"--dvipdf'[Generate PDF-format output (via LaTeX, dvips, and pstopdf)]' \
+    "$exclusive_modes"--latex-section'[Generate LaTeX-format output for section depth N]:section-depth: ' \
+    "$exclusive_modes"--text'[Generate text-format output]' \
+    "$exclusive_mods"--markdown'[Generate markdown-format output]' \
+    '(--lib -l)'{--lib,-l}'[Treat argument as library paths instead of filesystem paths]:*:lib-file:->libfile' \
+    '(--dest)'--dest'[Write output in directory]:directory:_files -/' \
+    '(--dest-name)'--dest-name'[Write output as name]:name: ' \
+    '(--dest-base)'--dest-base'[Start support-file names with prefix]:prefix: ' \
+    '(--keep-at-dest-base)'--keep-at-dest-base'[Keep existing files at location of support files]' \
+    '*'++convert'[Prefer image conversion to format]:format:(ps pdf svg png gif)' \
+    '*'++style'[Add given .css/.tex file after others]:style-file:_files -g \*.\(css\|tex\)' \
+    '(--style)'--style'[Use given base .css/.tex file]:style-file:_files -g \*.\(css\|tex\)' \
+    '(--prefix)'--prefix'[Use given .html/.tex prefix (for doctype/documentclass)]:prefix-file:_files -g \*.\(html\|htm\|tex\)' \
+    '(--link-section)'--link-section'[Support section links for markdown]' \
+    '*'++extra'[Add given file]:file:_files' \
+    '*'--redirect-main'[Redirect main doc links to url]:url: ' \
+    '*'--redirect'[Redirect external links to tag search via url]:url: ' \
     '(+m ++main-xref-in)'{+m,++main-xref-in}'[load format-speficic cross-ref info for all installed library collections]' \
-    '*'++xref-in'+[Load format-specific cross-ref info by]:module-path:->libfile:proc-id: ' \
-    '*'--info-out'+[Write format-specific cross-ref info to file]:file:_file' \
-    '*'++info-in'+[Load format-specific cross-ref info from file]:file:_file' \
+    '*'++xref-in'[Load format-specific cross-ref info by]:module-path:->libfile:proc-id: ' \
+    '*'--info-out'[Write format-specific cross-ref info to file]:file:_files' \
+    '*'++info-in'[Load format-specific cross-ref info from file]:file:_files' \
+    '*'++arg'[Add argument to current-command-line-arguments]:argument: ' \
     '(--quiet)'--quiet'[Suppress output-file and undefined-tag reporting]' \
+    '(--doc-binding)'--doc-binding'[Render document provided as ID instead of `doc'\'']:doc-binding: ' \
+    '(--make -y)'{--make,-y}'[Enable automatic update of compiled files]' \
+    '(--errortrace)'--errortrace'[Enable errortrace]' \
     '*:scribble-file:_files -g \*.scrbl' \
   && return 0
   _racket_do_state
