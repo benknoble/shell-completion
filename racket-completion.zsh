@@ -401,11 +401,11 @@ _raco_cmd_ctool() {
   _racket_do_state
 }
 
-_racket_self_test 'raco distribute:1034282712'
+_racket_self_test 'raco distribute:1595797597'
 _raco_cmd_distribute() {
   _arguments "$RACKET_COMMON[@]" \
-    '(--collects-path)'--collects-path'+[Set path as main collects for executables]:collection:->collect' \
-    '*'++collects-copy'+[Add collects in dir to directory]:collection:->collect' \
+    '(--collects-path)'--collects-path'[Set path as main collects for executables]:collection:->collect' \
+    '*'++collects-copy'[Add collects in dir to directory]:collection:->collect' \
     '(-v)'-v'[Verbose mode]' \
     '1:destination-directory:_files -/' \
     '*:executable:_files' \
