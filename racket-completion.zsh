@@ -463,9 +463,10 @@ _raco_cmd_unpack() {
   _racket_do_state
 }
 
-_racket_self_test 'raco expand:1935188678'
+_racket_self_test 'raco expand:1013149279'
 _raco_cmd_expand() {
   _arguments "$RACKET_COMMON[@]" \
+    '(--columns -n)'{--columns,-n}'[Format for N columns]:columns: ' \
     '*:source-file:_files' \
   && return 0
   _racket_do_state
