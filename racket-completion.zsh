@@ -316,23 +316,29 @@ _raco_cmd_scribble() {
   _racket_do_state
 }
 
-_racket_self_test 'raco exe:614832725'
+_racket_self_test 'raco exe:1343818001'
 _raco_cmd_exe() {
   _arguments "$RACKET_COMMON[@]" \
-    '(-o)'-o'+[Write executable as file]:output-executable:_files' \
-    '(--gui)'--gui'+[Generate GUI executable]' \
+    '(-o)'-o'[Write executable as file]:output-executable:_files' \
+    '(--gui)'--gui'[Generate GUI executable]' \
     '(-l --launcher)'{-l,--launcher}'[Generate a launcher]' \
-    '(--collects-path)'--collects-path'+[Set path as main collects for executable]:collection:->collect' \
-    '(--collects-dest)'--collects-dest'+[Write collection code to directory]:directory:_files -/' \
-    '(--ico)'--ico'+[Set Windows icon for executable]:ico-file:_files -g \*.ico' \
-    '(--icns)'--icns'+[Set Mac OS X icon for executable]:icns-file:_files -g \*.icns' \
+    '(--embed-dlls)'--embed-dlls'[On Windows, embed DLLs in the executable]' \
+    '(--config-path)'--config-path'[Set path as configuration directory for executable]:config:_files -/' \
+    '(--collects-path)'--collects-path'[Set path as main collects for executable]:collection:->collect' \
+    '(--collects-dest)'--collects-dest'[Write collection code to directory]:directory:_files -/' \
+    '(--ico)'--ico'[Set Windows icon for executable]:ico-file:_files -g \*.ico' \
+    '(--icns)'--icns'[Set Mac OS X icon for executable]:icns-file:_files -g \*.icns' \
     '(--orig-exe)'--orig-exe'[Use original executable instead of stub]' \
-    '(--3m --cgc)'--3m'[Generate using 3m variant]' \
-    '(--3m --cgc)'--cgc'[Generate using CGC variant]' \
-    '*'++aux'+[Extra executable info (based on aux-file suffix)]:aux-file:_files' \
-    '*'++lib'+[Embed lib in executable]:lib-file:_files' \
-    '*'++exf'+[Add flag to embed in executable]:flag: ' \
-    '*'--exf'+[Remove flag to embed in executable]:flag: ' \
+    '(--3m --cgc --cs)'--3m'[Generate using 3m variant]' \
+    '(--3m --cgc --cs)'--cgc'[Generate using CGC variant]' \
+    '(--3m --cgc --cs)'--cs'[Generate using CS variant]' \
+    '*'++lib'[Embed lib in executable]:lib-file:_files' \
+    '*'++lang'[Embed support for `#lang <lang>'\'' in executable]:lang:->libfile' \
+    '*'++named-lib'[Embed lib with name using prefix]:prefix: :lib-file:_files' \
+    '*'++named-file'[Embed file with name using prefix]:prefix: :file:_files' \
+    '*'++aux'[Extra executable info (based on aux-file suffix)]:aux-file:_files' \
+    '*'++exf'[Add flag to embed in executable]:flag: ' \
+    '*'--exf'[Remove flag to embed in executable]:flag: ' \
     '*'--exf-clear'[Clear flags to embed in executable]' \
     '*'--exf-show'[Show flags to embed in executable]' \
     '(-v)'-v'[Verbose mode]' \
