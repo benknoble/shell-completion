@@ -117,7 +117,7 @@ _racket_self_test() {
 
 ###############################################################################
 
-_racket_self_test 'racket:3785877773:grep -v "Welcome to Racket"'
+_racket_self_test 'racket:2561387185:grep -v "Welcome to Racket"'
 
 RACKET_COMMON=( -C -s -w -S : '(- : *)'{-h,--help}'[Display help]' )
 RACKET_ARGS=( "$RACKET_COMMON[@]" )
@@ -125,12 +125,12 @@ RACKET_ARGS=( "$RACKET_COMMON[@]" )
 # File and expression options:
 RACKET_ARGS+=(
   '*'{-e,--eval}'[Evaluate expression]:expression: '
-  '*'{-f,--load}'+[Load a file]:file:_files'
-  '*'{-t,--require}'+[Require a file]:file:_files'
-  '*'{-l,--lib}'+[Require a library file]:library-file:->libfile'
-  '*'-p'+[Require a planet package]:planet-package: '
-  '(- *)'{-r,--script}'+[Load a script (same as -f F -n F --)]:file:_files'
-  '(- *)'{-u,--require-script}'+[Require a script (same as -tN- F -N F --)]:file:_files'
+  '*'{-f,--load}'[Like -e `(load "FILE")'\'' without printing, or evaluates all from input when <file> is "-"]:file:_files'
+  '*'{-t,--require}'[Like -e `(require (file "FILE"))'\'' and requires a main submodule if any]:file:_files'
+  '*'{-l,--lib}'[Like -e `(require (lib "PATH"))'\'' and requires a main submodule if any]:library-file:->libfile'
+  '*'-p'+[Like -e `(require (planet "PACKAGE"))'\'' and requires a main submodule if any]:planet-package: '
+  '*'{-r,--script}'[Load a script (same as -f FILE -n FILE --)]:file:_files'
+  '*'{-u,--require-script}'[Require a script (same as -tN- FILE)]:file:_files'
   # No need to do `-k' -- it's for internal use by launchers
   '(-m --main)'{-m,--main}'[Call `main'"'"' with command-line arguments]'
 )
@@ -145,21 +145,29 @@ RACKET_ARGS+=(
 
 # Configuration options:
 RACKET_ARGS+=(
+  '(-y --make)'{-y,--make}'[Yes, enable automatic update of compiled files]'
   '(-c --no-compiled)'{-c,--no-compiled}'[Disable loading of compiled files]'
   '(-q --no-init-file)'{-q,--no-init-file}'[Skip loading ~/.racketrc for -i]'
-  '(-I)'-I'+[Set init-lib]:library-file:->libfile'
-  '(-X --collects)'{-X,--collects}'+[Main collects dir ("" disables all)]:directory:_files -/'
-  '*'{-S,--search}'+[More collects dir (after main)]:directory:_files -/'
-  '(-A --addon)'{-A,--addon}'+[Addon directory]:directory:_files -/'
-  '(-R --compiled)'{-A,--addon}'+[Set compiled-file search roots to directory]:directory:_files -/'
-  '(-C --links)'{-C,--links}'+[User-specific collection links file]:file:_files'
+  '(-I)'-I'[Set init-lib]:library-file:->libfile'
+  '(-X --collects)'{-X,--collects}'[Main collects dir ("" disables all)]:directory:_files -/'
+  '*'{-S,--search}'[More collects dir (after main)]:directory:_files -/'
+  '(-G --config)'{-G,--config}'[Main configuration directory]:directory:_files -/'
+  '(-A --addon)'{-A,--addon}'[Addon directory]:directory:_files -/'
   '(-U --no-user-path)'{-U,--no-user-path}'[Ignore user-specific collects, etc.]'
-  '(-N --name)'{-N,--name}'+[Sets (find-system-path '"'"'run-file)]:file:_files'
+  '(-R --compiled)'{-A,--addon}'[Set compiled-file search roots to directory]:directory:_files -/'
+  '(-C --links)'{-C,--links}'[User-specific collection links file]:file:_files'
+  '(-N --name)'{-N,--name}'[Sets (find-system-path '"'"'run-file)]:file:_files'
+  '(-E --exec)'{-E,--exec}'[Sets (find-system-path '"'"'exec-file)]:file:_files'
   '(-j --no-jit)'{-j,--no-jit}'[Disable the just-in-time compiler]'
+  '(-M --compile-any)'{-M,--compile-any}'[Compile to machine-independent form]'
   '(-d --no-delay)'{-d,--no-delay}'[Disable on-demand loading of syntax and code]'
   '(-b --binary)'{-b,--binary}'[Read stdin and write stdout/stderr in binary mode]'
-  '(-W --warn)'{-W,--warn}'+[Set stderr logging level]:log-level:(none fatal error warning info debug)'
-  '(-L --syslog)'{-L,--syslog}'+[Set syslog logging level]:log-level:(none fatal error warning info debug)'
+  '(-W --warn)'{-W,--warn}'[Set stderr logging level]:log-level:(none fatal error warning info debug)'
+  '(-O --stdout)'{-O,--stdout}'[Set stdout logging level]:log-level:(none fatal error warning info debug)'
+  '(-L --syslog)'{-L,--syslog}'[Set syslog logging level]:log-level:(none fatal error warning info debug)'
+  '(--compile-machine)'--compile-machine'[Compile for machine]:machine: '
+  '(--cross-compiler)'--cross-compiler'[Use compiler plugin for machine]:machine: :plugin-dir: '
+  '(--cross-server)'--cross-server'[Drive cross-compiler (as only option)]:machine: :compiler: :lib: '
 )
 
 # Main arguments:
