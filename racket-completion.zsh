@@ -490,15 +490,39 @@ _raco_cmd_demodularize() {
   _racket_do_state
 }
 
-_racket_self_test 'raco test:2458495009'
+_racket_self_test 'raco test:2023323379'
 _raco_cmd_test() {
+  local modes='(--collection -c --package -p --lib -l --modules -m)'
   _arguments "$RACKET_COMMON[@]" \
-    '(-s --submodule)'{-s,--submodule}'+[Runs submodule name (defaults to `test'"'"')]:submodule: ' \
+    "$modes"{-c,--collection}'[Interpret arguments as collections]' \
+    "$modes"{-l,--lib}'[Interpret arguments as libraries]' \
+    "$modes"{-p,--package}'[Interpret arguments as packages]' \
+    "$modes"{-m,--modules}'[Interpret arguments as modules (ignore argument unless ".rkt", ".scrbl", or enabled by "info.rkt")]' \
+    '(--drdr)'--drdr'[Configure defaults to imitate DrDr]' \
+    '*'{-s,--submodule}'[Runs submodule name (defaults to `test'"'"')]:submodule: ' \
+    '*'++arg'[Add argument to current-command-line-arguments]:argument: ' \
+    '*'++args'[Adds each whitespace-delimited in args like ++arg]:arguments: ' \
     '(-r --run-if-absent -x --no-run-if-absent)'{-r,--run-if-absent}'[Require module if submodule is absent (on by default)]' \
     '(-r --run-if-absent -x --no-run-if-absent)'{-x,--no-run-if-absent}'[Require nothing if submodule is absent]' \
-    '(-q --quiet)'{-q,--quiet}'+[Suppress `Running ...'"'"' message]' \
-    '(-c --collection)'{-c,--collection}'+[Interpret arguments as collections]' \
-    '(-p --package)'{-p,--package}'+[Interpret arguments as packages]' \
+    '(--first-avail)'--first-avail'[Run only the first available submodule]' \
+    '(--configure-runtime)'--configure-runtime'[Run the `configure-runtime'\'' submodule]' \
+    '(--direct --process --place)'--direct'[Run tests directly (default for a single file)]' \
+    '(--direct --process --place)'--process'[Run tests in separate processes (default for multiple files)]' \
+    '(--direct --process --place)'--place'[Run tests in places]' \
+    '(-j --jobs)'{-j,--jobs}'[Run up to N tests in parallel]:number of tests: ' \
+    '(--timeout)'--timeout'[Set default timeout in seconds]:timeout seconds: ' \
+    '(--fresh-user)'--fresh-user'[Fresh PLTUSERHOME, etc., for each test]' \
+    '(--empty-stdin)'--empty-stdin'[Call program with an empty stdin]' \
+    '(--quiet-program -Q)'{--quiet-program,-Q}'[Quiet the program]' \
+    '(--check-stderr -e)'{--check-stderr,-e}'[Treat stderr output as a test failure]' \
+    '(--deps)'--deps'[If treating arguments as packages, also test dependencies]' \
+    '(--errortrace --make -y)'--errortrace'[Load errortrace before testing]' \
+    '(--errortrace --make -y)'{--make,-y}'[Enable automatic update of compiled files]' \
+    '*'++ignore-stderr'[Enable stderr output that matches #px"pattern"]:pattern: ' \
+    '(-q --quiet)'{-q,--quiet}'+[Suppress `raco test: ...` message]' \
+    '(--heartbeat)'--heartbeat'[Periodically report that a test is still running]' \
+    '(--table, -t)'--table, -t'[Print a summary table]' \
+    '(--output -o)'{--output,-o}'[Save stdout and stderr to file, overwrite if it exists.]:output:_files' \
     '*:source-file-or-directory:_files' \
   && return 0
   _racket_do_state
