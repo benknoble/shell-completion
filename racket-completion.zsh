@@ -536,6 +536,29 @@ _raco_cmd_test() {
   _racket_do_state
 }
 
+_racket_self_test 'raco pkg:3232773977'
+_raco_cmd_pkg() {
+  if (( CURRENT > 2 )); then
+    local subcmd="${words[2]}"
+    curcontext="${curcontext%:*:*}:raco-pkg-$subcmd"
+    (( CURRENT-- ))
+    shift words
+    if [[ $subcmd = -(h|-help) ]]; then _message 'no more arguments'
+    elif (( $+functions[_raco_cmd_pkg_$subcmd] )); then _raco_cmd_pkg_$subcmd
+    else _normal
+    fi
+  else
+    local hline
+    local -a cmdlist
+    local pfx='^  raco pkg '
+    cmdlist=(
+      {-h,--help}:'Display help'
+      ${(f)"$(raco pkg | grep "$pfx" | sed -e "s/$pfx"'\([^ ]*\) *\(.*\)/\1:\2/')"}
+    )
+    _describe -t raco-pkg-commands 'raco pkg command' cmdlist
+  fi
+}
+
 _racket_self_test 'raco planet:1582997403'
 _raco_cmd_planet() {
   if (( CURRENT > 2 )); then
