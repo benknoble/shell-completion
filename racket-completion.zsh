@@ -348,14 +348,15 @@ _raco_cmd_exe() {
   _racket_do_state
 }
 
-_racket_self_test 'raco make:3358542168'
+_racket_self_test 'raco make:3873989386'
 _raco_cmd_make() {
   _arguments "$RACKET_COMMON[@]" \
-    '(-j)'-j'+[Use N parallel jobs]:cores: ' \
+    '*'-l'[Compile path as a collection-based module path]:path:->libfile' \
+    '(-j)'-j'[Use N parallel jobs]:cores: ' \
     '(--disable-inline)'--disable-inline'[Disable procedure inlining during compilation]' \
     '(--disable-constant)'--disable-constant'[Disable enforcement of module constants]' \
     '(--no-deps)'--no-deps'[Compile immediate files without updating dependencies]' \
-    '(-p --prefix)'{-p,--prefix}'+[Add elaboration-time prefix file for --no-deps]:prefix-file:_files' \
+    '(-p --prefix)'{-p,--prefix}'[Add elaboration-time prefix file for --no-deps]:prefix-file:_files' \
     '(--no-prim)'--no-prim'[Do not assume `scheme'"'"' bindings at top level for --no-deps]' \
     '(-v)'-v'[Verbose mode]' \
     '(--vv)'--vv'[Very verbose mode]' \
