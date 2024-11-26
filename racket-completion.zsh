@@ -567,10 +567,6 @@ INSTALL_UPDATE_ARGS=(
   '(--deps --auto)'--auto'[Shorthand for `--deps search-auto'\'']'
   '(--update-deps)'--update-deps'[For `search-ask'\'' or `search-auto'\'', also update dependencies]'
   '(--ignore-implies)'--ignore-implies'[When updating, treat `implies'\'' like other dependencies]'
-  '(--scope -i --installation -u --user --scope-dir)'--scope'[Select package scope]:scope:(installation user)'
-  '(--scope -i --installation -u --user --scope-dir)'{-i,--installation}'[Shorthand for `--scope installation'\'']'
-  '(--scope -i --installation -u --user --scope-dir)'{-u,--user}'[Shorthand for `--scope user'\'']'
-  '(--scope -i --installation -u --user --scope-dir)'--scope-dir'[Select package scope <dir>]:scope:_files -/'
   '*'--catalog'[Use instead of configured catalogs]:catalog: '
   '(--all-platforms)'--all-platforms'[Follow package dependencies for all platforms]'
   '(--force)'--force'[Ignore conflicts]'
@@ -588,6 +584,13 @@ INSTALL_UPDATE_ARGS=(
   '(--no-trash)'--no-trash'[Delete uninstalled/updated, instead of moving to a trash folder]'
 )
 
+SCOPE_ARGS=(
+  '(--scope -i --installation -u --user --scope-dir)'--scope'[Select package scope]:scope:(installation user)'
+  '(--scope -i --installation -u --user --scope-dir)'{-i,--installation}'[Shorthand for `--scope installation'\'']'
+  '(--scope -i --installation -u --user --scope-dir)'{-u,--user}'[Shorthand for `--scope user'\'']'
+  '(--scope -i --installation -u --user --scope-dir)'--scope-dir'[Select package scope <dir>]:scope:_files -/'
+)
+
 _racket_self_test 'raco pkg install:2252657386'
 _raco_cmd_pkg_install() {
   local specs=(
@@ -603,7 +606,7 @@ _raco_cmd_pkg_install() {
     '(--fail-fast)'--fail-fast'[Break `raco setup'\'' when it discovers an error]'
     '*:package source: '
   )
-  _arguments "$RACKET_COMMON[@]" "$INSTALL_UPDATE_ARGS[@]" "$specs[@]" && return 0
+  _arguments "$RACKET_COMMON[@]" "$INSTALL_UPDATE_ARGS[@]" "$SCOPE_ARGS[@]" "$specs[@]" && return 0
   _racket_do_state
 }
 
@@ -623,7 +626,26 @@ _raco_cmd_pkg_update() {
     '(--skip-uninstalled)'--skip-uninstalled'[Skip a pkg-source if not installed]'
     '*:package source: '
   )
-  _arguments "$RACKET_COMMON[@]" "$INSTALL_UPDATE_ARGS[@]" "$specs[@]" && return 0
+  _arguments "$RACKET_COMMON[@]" "$INSTALL_UPDATE_ARGS[@]" "$SCOPE_ARGS[@]" "$specs[@]" && return 0
+  _racket_do_state
+}
+
+_racket_self_test 'raco pkg uninstall:1205341767'
+_raco_cmd_pkg_uninstall() {
+  local specs=(
+    '(--demote)'--demote'[Demote to auto-installed, instead of removing]'
+    '(--force)'--force'[Uninstall even if package has dependents]'
+    '(--auto)'--auto'[Also uninstall auto-installed packages that have no dependents]'
+    '(--dry-run)'--dry-run'[Don'\''t actually change package installation]'
+    '(--no-setup)'--no-setup'[Don'\''t `raco setup` after changing packages (usually a bad idea)]'
+    '(-D --no-docs)'{-D,--no-docs}'[Do not compile .scrbl files and do not build documentation]'
+    '(--recompile-only)'--recompile-only'[Expect built packages, possibly machine-independent]'
+    '(-j --jobs)'{-j,--jobs}'[Setup with N parallel jobs]:cores: '
+    '(--batch)'--batch'[Disable interactive mode and all prompts]'
+    '(--no-trash)'--no-trash'[Delete uninstalled/updated, instead of moving to a trash folder]'
+    '*:package source: '
+  )
+  _arguments "$RACKET_COMMON[@]" "$SCOPE_ARGS[@]" "$specs[@]" && return 0
   _racket_do_state
 }
 
