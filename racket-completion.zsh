@@ -662,6 +662,12 @@ _raco_cmd_pkg_uninstall() {
   _racket_do_state
 }
 
+_racket_self_test 'raco pkg new:2017728815'
+_raco_cmd_pkg_new() {
+  _arguments "$RACKET_COMMON[@]" '1:package: ' && return 0
+  _racket_do_state
+}
+
 _racket_self_test 'raco planet:1582997403'
 _raco_cmd_planet() {
   if (( CURRENT > 2 )); then
