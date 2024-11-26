@@ -60,6 +60,19 @@ _racket_call() {
   _call_program "$tag" racket "${(@)flags}" -I racket/base -q -e '$prog'
 }
 
+_raco_call() {
+  local tag="$1"; shift
+  _call_program "$tag" raco "$@"
+}
+
+_racket_read_installed_package() {
+  local -a packages
+  packages=(
+    "${(f)$(_raco_call packages pkg show --all | sed 1,2d | awk '{print $1}' | sed 's/\*$//')}"
+  )
+  _wanted installed-packages expl installed-package compadd -a packages
+}
+
 _racket_read_libfile_or_collect() {
   local -a dirs
   dirs=(
@@ -221,7 +234,7 @@ _raco_cmd_setup() {
   local collections=(
     '(--only)'--only'[Set up only specified, even if none]'
     '(-l)'-l'[Setup specific collections]:*:collection:->collect'
-    '(--pkgs)'--pkgs'[Setup collections in specified packages]:packages: '
+    '(--pkgs)'--pkgs'[Setup collections in specified packages]:*:packages:->installed_package'
     '*'-P'[Setup specified PLaneT packages only]:owner: :package-name: :major-version: :minor-version: '
     '(--doc-index)'--doc-index'[Rebuild documentation index along with specified]'
     '(--tidy)'--tidy'[Clear references to removed items outside of specified]'
@@ -624,7 +637,7 @@ _raco_cmd_pkg_update() {
     '(--link --static-link --copy --clone --unclone --source --binary --binary-lib)'--binary'[Strip packages'\'' source elements before installing; implies --copy]'
     '(--link --static-link --copy --clone --unclone --source --binary --binary-lib)'--binary-lib'[Strip source & documentation before installing; implies --copy]'
     '(--skip-uninstalled)'--skip-uninstalled'[Skip a pkg-source if not installed]'
-    '*:package source: '
+    '*:package source:->installed_package'
   )
   _arguments "$RACKET_COMMON[@]" "$INSTALL_UPDATE_ARGS[@]" "$SCOPE_ARGS[@]" "$specs[@]" && return 0
   _racket_do_state
@@ -643,7 +656,7 @@ _raco_cmd_pkg_uninstall() {
     '(-j --jobs)'{-j,--jobs}'[Setup with N parallel jobs]:cores: '
     '(--batch)'--batch'[Disable interactive mode and all prompts]'
     '(--no-trash)'--no-trash'[Delete uninstalled/updated, instead of moving to a trash folder]'
-    '*:package source: '
+    '*:package source:->installed_package'
   )
   _arguments "$RACKET_COMMON[@]" "$SCOPE_ARGS[@]" "$specs[@]" && return 0
   _racket_do_state
