@@ -668,6 +668,26 @@ _raco_cmd_pkg_new() {
   _racket_do_state
 }
 
+_racket_self_test 'raco pkg show:2737181330'
+_raco_cmd_pkg_show() {
+  local specs=(
+    '(-a --all)'{-a,--all}'[Show auto-installed packages, too]'
+    '(-l --long)'{-l,--long}'[Show full column content]'
+    '(--full-checksum)'--full-checksum'[Show the full checksum]'
+    '(--rx)'--rx'[Treat packages as regular expressions]'
+    '(-d --dir)'{-d,--dir}'[Show the directory where the package is installed]'
+    # like SCOPE_ARGS, but with -v/--version
+    '(--scope -i --installation -u --user --scope-dir -v --version)'--scope'[Select package scope]:scope:(installation user)'
+    '(--scope -i --installation -u --user --scope-dir -v --version)'{-i,--installation}'[Shorthand for `--scope installation'\'']'
+    '(--scope -i --installation -u --user --scope-dir -v --version)'{-u,--user}'[Shorthand for `--scope user'\'']'
+    '(--scope -i --installation -u --user --scope-dir -v --version)'--scope-dir'[Select package scope <dir>]:scope:_files -/'
+    '(--scope -i --installation -u --user --scope-dir -v --version)'{-v,--version}'[Show user-specific for installation version]:version: '
+    '*:package:->installed_package'
+  )
+  _arguments "$RACKET_COMMON[@]" "$specs[@]" && return 0
+  _racket_do_state
+}
+
 _racket_self_test 'raco planet:1582997403'
 _raco_cmd_planet() {
   if (( CURRENT > 2 )); then
