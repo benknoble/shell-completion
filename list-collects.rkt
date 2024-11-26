@@ -2,7 +2,7 @@
 
 (provide get-top-level-collection-paths)
 
-(require racket/string racket/list racket/path setup/dirs setup/link)
+(require racket/list racket/path setup/link)
 
 (define (add-directory-collections c s)
   (if (directory-exists? c)
@@ -35,7 +35,7 @@
   (define shell (getenv var))
   (cond [(equal? shell "bash")
          (for ([p (get-top-level-collection-paths)])
-           (define-values [base name dir?] (split-path p))
+           (define-values [_base name _dir?] (split-path p))
            (displayln name))]
         [(equal? shell "zsh")
          (for-each displayln
