@@ -572,6 +572,21 @@ _raco_cmd_pkg() {
   fi
 }
 
+COMMON_PKG_ARGS=(
+  '*'--catalog'[Use instead of configured catalogs]:catalog: '
+  '(--all-platforms)'--all-platforms'[Follow package dependencies for all platforms]'
+  '(--force)'--force'[Ignore conflicts]'
+  '(--ignore-checksums)'--ignore-checksums'[Ignore checksums]'
+  '(--strict-doc-conflicts)'--strict-doc-conflicts'[Report doc-name conflicts, even for user scope]'
+  '(--no-cache)'--no-cache'[Disable download cache]'
+  '(--dry-run)'--dry-run'[Don'\''t actually change package installation]'
+  '(--no-setup)'--no-setup'[Don'\''t `raco setup` after changing packages (usually a bad idea)]'
+  '(-D --no-docs)'{-D,--no-docs}'[Do not compile .scrbl files and do not build documentation]'
+  '(--recompile-only)'--recompile-only'[Expect built packages, possibly machine-independent]'
+  '(-j --jobs)'{-j,--jobs}'[Setup with N parallel jobs]:cores: '
+  '(--batch)'--batch'[Disable interactive mode and all prompts]'
+)
+
 INSTALL_UPDATE_ARGS=(
   '(-t --type)'{-t,--type}'[Specify type of source, instead of inferred]:type:(file dir file-url dir-url git git-url github name)'
   '(-n --name)'{-n,--name}'[Specify name of package, instead of inferred; makes sense only when a single pkg-source is given]:name: '
@@ -580,20 +595,8 @@ INSTALL_UPDATE_ARGS=(
   '(--deps --auto)'--auto'[Shorthand for `--deps search-auto'\'']'
   '(--update-deps)'--update-deps'[For `search-ask'\'' or `search-auto'\'', also update dependencies]'
   '(--ignore-implies)'--ignore-implies'[When updating, treat `implies'\'' like other dependencies]'
-  '*'--catalog'[Use instead of configured catalogs]:catalog: '
-  '(--all-platforms)'--all-platforms'[Follow package dependencies for all platforms]'
-  '(--force)'--force'[Ignore conflicts]'
-  '(--ignore-checksums)'--ignore-checksums'[Ignore checksums]'
-  '(--strict-doc-conflicts)'--strict-doc-conflicts'[Report doc-name conflicts, even for user scope]'
-  '(--no-cache)'--no-cache'[Disable download cache]'
   '(--multi-clone)'--multi-clone'[Specify treatment of multiple clones of a repository]:mode:(convert ask fail force)'
   '(--pull)'--pull'[Specify `git pull'\'' mode for repository clones]:mode:(ff-only try rebase)'
-  '(--dry-run)'--dry-run'[Don'\''t actually change package installation]'
-  '(--no-setup)'--no-setup'[Don'\''t `raco setup` after changing packages (usually a bad idea)]'
-  '(-D --no-docs)'{-D,--no-docs}'[Do not compile .scrbl files and do not build documentation]'
-  '(--recompile-only)'--recompile-only'[Expect built packages, possibly machine-independent]'
-  '(-j --jobs)'{-j,--jobs}'[Setup with N parallel jobs]:cores: '
-  '(--batch)'--batch'[Disable interactive mode and all prompts]'
   '(--no-trash)'--no-trash'[Delete uninstalled/updated, instead of moving to a trash folder]'
 )
 
@@ -619,7 +622,7 @@ _raco_cmd_pkg_install() {
     '(--fail-fast)'--fail-fast'[Break `raco setup'\'' when it discovers an error]'
     '*:package source: '
   )
-  _arguments "$RACKET_COMMON[@]" "$INSTALL_UPDATE_ARGS[@]" "$SCOPE_ARGS[@]" "$specs[@]" && return 0
+  _arguments "$RACKET_COMMON[@]" "$COMMON_PKG_ARGS[@]" "$INSTALL_UPDATE_ARGS[@]" "$SCOPE_ARGS[@]" "$specs[@]" && return 0
   _racket_do_state
 }
 
@@ -639,7 +642,7 @@ _raco_cmd_pkg_update() {
     '(--skip-uninstalled)'--skip-uninstalled'[Skip a pkg-source if not installed]'
     '*:package source:->installed_package'
   )
-  _arguments "$RACKET_COMMON[@]" "$INSTALL_UPDATE_ARGS[@]" "$SCOPE_ARGS[@]" "$specs[@]" && return 0
+  _arguments "$RACKET_COMMON[@]" "$COMMON_PKG_ARGS[@]" "$INSTALL_UPDATE_ARGS[@]" "$SCOPE_ARGS[@]" "$specs[@]" && return 0
   _racket_do_state
 }
 
@@ -685,6 +688,18 @@ _raco_cmd_pkg_show() {
     '*:package:->installed_package'
   )
   _arguments "$RACKET_COMMON[@]" "$specs[@]" && return 0
+  _racket_do_state
+}
+
+_racket_self_test 'raco pkg migrate:2132316292'
+_raco_cmd_pkg_migrate() {
+  local specs=(
+    '(--deps)'--deps'[Specify the behavior for uninstalled dependencies]:mode:(fail force search-ask search-auto)'
+    '(--source --binary --binary-lib)'--source'[Strip built elements of the package before installing]'
+    '(--binary --binary --binary-lib)'--binary'[Strip source elements of the package before installing]'
+    '(--binary-lib --binary --binary-lib)'--binary-lib'[Strip source elements and documentation before installing]'
+  )
+  _arguments "$RACKET_COMMON[@]" "$COMMON_PKG_ARGS[@]" "$SCOPE_ARGS[@]" "$specs[@]" '1:from version: ' && return 0
   _racket_do_state
 }
 
