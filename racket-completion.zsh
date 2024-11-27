@@ -73,6 +73,14 @@ _racket_read_installed_package() {
   _wanted installed-packages expl installed-package compadd -a packages
 }
 
+_racket_read_migrate_version() {
+  local -a versions
+  versions=(
+    "${(f)$(_racket_call migrate-versions '(require pkg/lib) (for-each displayln (pkg-migrate-available-versions))')}"
+  )
+  _wanted migrate-versions expl migrate-version compadd -a versions
+}
+
 _racket_read_libfile_or_collect() {
   local -a dirs
   dirs=(
@@ -699,7 +707,7 @@ _raco_cmd_pkg_migrate() {
     '(--binary --binary --binary-lib)'--binary'[Strip source elements of the package before installing]'
     '(--binary-lib --binary --binary-lib)'--binary-lib'[Strip source elements and documentation before installing]'
   )
-  _arguments "$RACKET_COMMON[@]" "$COMMON_PKG_ARGS[@]" "$SCOPE_ARGS[@]" "$specs[@]" '1:from version: ' && return 0
+  _arguments "$RACKET_COMMON[@]" "$COMMON_PKG_ARGS[@]" "$SCOPE_ARGS[@]" "$specs[@]" '1:from version:->migrate_version' && return 0
   _racket_do_state
 }
 
