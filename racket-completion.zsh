@@ -593,14 +593,14 @@ COMMON_PKG_ARGS=(
   '(--recompile-only)'--recompile-only'[Expect built packages, possibly machine-independent]'
   '(-j --jobs)'{-j,--jobs}'[Setup with N parallel jobs]:cores: '
   '(--batch)'--batch'[Disable interactive mode and all prompts]'
+  '(--deps --auto)'--deps'[Specify the behavior for uninstalled dependencies]:mode:(fail force search-ask search-auto)'
+  '(--deps --auto)'--auto'[Shorthand for `--deps search-auto'\'']'
 )
 
 INSTALL_UPDATE_ARGS=(
   '(-t --type)'{-t,--type}'[Specify type of source, instead of inferred]:type:(file dir file-url dir-url git git-url github name)'
   '(-n --name)'{-n,--name}'[Specify name of package, instead of inferred; makes sense only when a single pkg-source is given]:name: '
   '(--checksum)'--checksum'[Checksum of package, either expected or selected; makes sense only when a single pkg-source is given]:checksum: '
-  '(--deps --auto)'--deps'[Specify the behavior for uninstalled dependencies]:mode:(fail force search-ask search-auto)'
-  '(--deps --auto)'--auto'[Shorthand for `--deps search-auto'\'']'
   '(--update-deps)'--update-deps'[For `search-ask'\'' or `search-auto'\'', also update dependencies]'
   '(--ignore-implies)'--ignore-implies'[When updating, treat `implies'\'' like other dependencies]'
   '(--multi-clone)'--multi-clone'[Specify treatment of multiple clones of a repository]:mode:(convert ask fail force)'
@@ -702,7 +702,6 @@ _raco_cmd_pkg_show() {
 _racket_self_test 'raco pkg migrate:2132316292'
 _raco_cmd_pkg_migrate() {
   local specs=(
-    '(--deps)'--deps'[Specify the behavior for uninstalled dependencies]:mode:(fail force search-ask search-auto)'
     '(--source --binary --binary-lib)'--source'[Strip built elements of the package before installing]'
     '(--binary --binary --binary-lib)'--binary'[Strip source elements of the package before installing]'
     '(--binary-lib --binary --binary-lib)'--binary-lib'[Strip source elements and documentation before installing]'
